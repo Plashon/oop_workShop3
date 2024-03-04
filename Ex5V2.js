@@ -31,7 +31,7 @@ class Customer {
   toString() {
     return `Customer[name = ${this.name}, member = ${
       this.member
-    }, memberType = ${this.getMemberType()}]`;
+    }, memberType = ${this.getMemberType()} ]`;
   }
 }
 
@@ -94,11 +94,11 @@ class Visit {
   }
 
   toString() {
-    return `Visit[${this.customer.toString()}, serviceExpense = ${
+    return `Visit [ ${this.customer.toString()}, serviceExpense = ${
       this.serviceExpense
     }, productExpense = ${
       this.productExpense
-    }, total = ${this.getTotalExpense()}]`;
+    }, total = ${this.getTotalExpense()} ]`;
   }
 }
 
@@ -121,7 +121,7 @@ class DiscountRate {
 }
 
 const main = () => {
-  const customer1 = new Customer("Phubate", true, DiscountRate.SPREMIUM);
+  const customer1 = new Customer("Phubate", true, DiscountRate.PPREMIUM);
   const customer2 = new Customer("vick", true, DiscountRate.SPREMIUM);
   const visit1 = new Visit(customer1, "2024/02/13", 700, 100);
 

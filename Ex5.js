@@ -1,35 +1,29 @@
 class Customer {
   name = "";
   member = false;
-  memberType = 0;
-  constructor(name, member = false, memberType) {
+  memberType = "";
+  constructor(name) {
     this.name = name;
-    this.member = member;
-    this.memberType = memberType;
   }
-
   getName() {
     return this.name;
   }
-
   isMember() {
     return this.member;
   }
-
   setMember(member) {
     this.member = member;
   }
-
   getMemberType() {
     return this.memberType;
   }
-
   setMemberType(memberType) {
     this.memberType = memberType;
   }
-
   toString() {
-    return `Customer[name = ${this.name}, member = ${this.member}, memberType = ${this.memberType}]`;
+    return `Customer [ name = ${this.name}, member = ${
+      this.member
+    }, memberType = ${this.getMemberType()}]`;
   }
 }
 
@@ -44,65 +38,88 @@ class Visit {
     this.serviceExpense = serviceExpense;
     this.productExpense = productExpense;
   }
-
   getName() {
     return this.name;
   }
-
   getServiceExpense() {
     return this.serviceExpense;
   }
-
   setServiceExpense(serviceExpense) {
     this.serviceExpense = serviceExpense;
   }
-
   getProductExpense() {
     return this.productExpense;
   }
-
   setProductExpense(productExpense) {
     this.productExpense = productExpense;
   }
-
   getTotalExpense() {
-    return this.serviceExpense + this.productExpense;
-  }
+    let total = 0;
+    let ptotal =
+      this.getProductExpense() -
+      DiscountRate.getProductDiscountRate(this.customer.getMemberType()) *
+        this.getProductExpense();
+    let stotal =
+      this.getServiceExpense() -
+      DiscountRate.getServiceDiscountRate(this.customer.getMemberType()) *
+        this.getServiceExpense();
 
+    total = ptotal + stotal;
+    return total;
+  }
   toString() {
-    return `Visit[${this.customer.toString()}, serviceExpense = ${
+    return `Visit [ ${this.customer.toString()}, serviceExpense = ${
       this.serviceExpense
-    }, productExpense = ${
-      this.productExpense
-    }, total = ${this.getTotalExpense()}]`;
+    } ,
+        productExpense ${
+          this.productExpense
+        }, total = ${this.getTotalExpense()}]`;
   }
 }
 
 class DiscountRate {
-  static SPREMIUM = new DiscountRate(0.2);
-  static SGOLD = new DiscountRate(0.15);
-  static SSILVER = new DiscountRate(0.1);
-  static PPREMIUM = new DiscountRate(0.1);
-  static PGOLD = new DiscountRate(0.1);
-  static PSILVER = new DiscountRate(0.1);
+  static PREMIUM = new DiscountRate("premium");
+  static GOLD = new DiscountRate("gold");
+  static SILVER = new DiscountRate("silver");
 
-  constructor(name) {
-    this.name = name;
+  constructor(type) {
+    this.type = type;
   }
-
-  getServiceDiscountRate() {
-    return this.name;
+  static getServiceDiscountRate(type) {
+    switch (type) {
+      case "premium":
+        return 0.2;
+      case "gold":
+        return 0.15;
+      case "silver":
+        return 0.1;
+      default:
+        return 0;
+    }
   }
-
-  getProductDiscountRate() {
-    return this.name;
+  static getProductDiscountRate(type) {
+    switch (type) {
+      case "premium":
+        return 0.1;
+      case "gold":
+        return 0.1;
+      case "silver":
+        return 0.1;
+      default:
+        return 0;
+    }
   }
+  //static ทำให้เรียกใช้นอกคลาสได้
 }
 
 const main = () => {
-  const customer1 = new Customer("Phubate", true, DiscountRate.SGOLD);
-  const visit1 = new Visit(customer1, "2024/02/13", 100, 50);
+  const customer2 = new Customer("vick");
+  customer2.setMember(true);
+  customer2.setMemberType("silver");
 
-  console.log(customer1.toString());
+  const visit1 = new Visit(customer2, "2024/03/04");
+  visit1.setProductExpense(150);
+  visit1.setServiceExpense(100);
+  console.log(visit1.toString());
 };
 main();

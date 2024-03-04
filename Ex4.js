@@ -1,7 +1,7 @@
 class Shape {
     color = "";
     filled = true;
-    constructor(color = "red", filled = "true") {
+    constructor(color = "red", filled) {
       this.color = color;
       this.filled = filled;
     }
@@ -23,7 +23,7 @@ class Shape {
     }
   
     toString() {
-      return `Shape[color = ${this.color}, filled = ${this.filled}]`;
+      return `Shape [ color = ${this.color}, filled = ${this.filled}]`;
     }
   }
   
