@@ -21,7 +21,7 @@ class Customer {
   }
 
   getMemberType() {
-    return this.memberType;
+    return this.memberType.getDiscountRate();
   }
 
   setMemberType(memberType) {
@@ -29,7 +29,9 @@ class Customer {
   }
 
   toString() {
-    return `Customer[name = ${this.name}, member = ${this.member}, memberType = ${this.memberType}]`;
+    return `Customer[name = ${this.name}, member = ${
+      this.member
+    }, memberType = ${this.getMemberType()}]`;
   }
 }
 
@@ -66,7 +68,29 @@ class Visit {
   }
 
   getTotalExpense() {
-    return this.serviceExpense + this.productExpense;
+    let total = 0;
+    if (
+      this.customer.memberType == DiscountRate.PGOLD ||
+      this.customer.memberType == DiscountRate.PPREMIUM ||
+      this.customer.memberType == DiscountRate.PSILVER
+    ) {
+      total =
+        this.serviceExpense +
+        this.productExpense -
+        this.productExpense * this.customer.getMemberType();
+    } else if (
+      this.customer.memberType == DiscountRate.SGOLD ||
+      this.customer.memberType == DiscountRate.SPREMIUM ||
+      this.customer.memberType == DiscountRate.SSILVER
+    ) {
+      total =
+        this.serviceExpense +
+        this.productExpense -
+        this.serviceExpense * this.customer.getMemberType();
+    } else {
+      total = this.serviceExpense + this.productExpense;
+    }
+    return total;
   }
 
   toString() {
@@ -90,19 +114,17 @@ class DiscountRate {
     this.name = name;
   }
 
-  getServiceDiscountRate() {
+  getDiscountRate() {
     return this.name;
   }
 
-  getProductDiscountRate() {
-    return this.name;
-  }
 }
 
 const main = () => {
-  const customer1 = new Customer("Phubate", true, DiscountRate.SGOLD);
-  const visit1 = new Visit(customer1, "2024/02/13", 100, 50);
+  const customer1 = new Customer("Phubate", true, DiscountRate.SPREMIUM);
+  const customer2 = new Customer("vick", true, DiscountRate.SPREMIUM);
+  const visit1 = new Visit(customer1, "2024/02/13", 700, 100);
 
-  console.log(customer1.toString());
+  console.log(visit1.toString());
 };
 main();
