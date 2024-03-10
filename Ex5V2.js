@@ -1,11 +1,9 @@
 class Customer {
   name = "";
   member = false;
-  memberType = 0;
-  constructor(name, member = false, memberType) {
+  memberType = "";
+  constructor(name) {
     this.name = name;
-    this.member = member;
-    this.memberType = memberType;
   }
 
   getName() {
@@ -21,7 +19,7 @@ class Customer {
   }
 
   getMemberType() {
-    return this.memberType.getDiscountRate();
+    return this.memberType;
   }
 
   setMemberType(memberType) {
@@ -29,9 +27,7 @@ class Customer {
   }
 
   toString() {
-    return `Customer[name = ${this.name}, member = ${
-      this.member
-    }, memberType = ${this.getMemberType()} ]`;
+    return `Customer[name = ${this.name}, member = ${this.member}, memberType = ${this.getMemberType()}]`;
   }
 }
 
@@ -40,11 +36,9 @@ class Visit {
   date = "";
   serviceExpense = 0;
   productExpense = 0;
-  constructor(customer, date, serviceExpense, productExpense) {
+  constructor(customer, date) {
     this.customer = customer;
     this.date = date;
-    this.serviceExpense = serviceExpense;
-    this.productExpense = productExpense;
   }
 
   getName() {
@@ -69,61 +63,73 @@ class Visit {
 
   getTotalExpense() {
     let total = 0;
-    if (
-      this.customer.memberType == DiscountRate.PGOLD ||
-      this.customer.memberType == DiscountRate.PPREMIUM ||
-      this.customer.memberType == DiscountRate.PSILVER
-    ) {
-      total =
-        this.serviceExpense +
-        this.productExpense -
-        this.productExpense * this.customer.getMemberType();
-    } else if (
-      this.customer.memberType == DiscountRate.SGOLD ||
-      this.customer.memberType == DiscountRate.SPREMIUM ||
-      this.customer.memberType == DiscountRate.SSILVER
-    ) {
-      total =
-        this.serviceExpense +
-        this.productExpense -
-        this.serviceExpense * this.customer.getMemberType();
-    } else {
-      total = this.serviceExpense + this.productExpense;
-    }
+    let proTotal =
+      this.getProductExpense() -
+      DiscountRate.getProductDiscountRate(this.customer.getMemberType()) *
+        this.getProductExpense();
+    let serTotal =
+      this.getServiceExpense() -
+      DiscountRate.getServiceDiscountRate(this.customer.getMemberType()) *
+        this.getServiceExpense();
+
+    total = serTotal + proTotal;
+
     return total;
   }
 
   toString() {
-    return `Visit [ ${this.customer.toString()}, serviceExpense = ${
+    return `Visit[${this.customer.toString()}, serviceExpense = ${
       this.serviceExpense
     }, productExpense = ${
       this.productExpense
-    }, total = ${this.getTotalExpense()} ]`;
+    }, total = ${this.getTotalExpense()}]`;
   }
 }
 
 class DiscountRate {
-  static SPREMIUM = new DiscountRate(0.2);
-  static SGOLD = new DiscountRate(0.15);
-  static SSILVER = new DiscountRate(0.1);
-  static PPREMIUM = new DiscountRate(0.1);
-  static PGOLD = new DiscountRate(0.1);
-  static PSILVER = new DiscountRate(0.1);
+  static PREMIUM = new DiscountRate("Premium");
+  static GOLD = new DiscountRate("Gold");
+  static SILVER = new DiscountRate("Silver");
 
-  constructor(name) {
-    this.name = name;
+  constructor(type) {
+    this.type = type;
   }
 
-  getDiscountRate() {
-    return this.name;
+  static getServiceDiscountRate(type) {
+    switch (type) {
+      case "Premium":
+        return 0.2;
+      case "Gold":
+        return 0.15;
+      case "Silver":
+        return 0.1;
+      default:
+        return 0;
+    }
   }
 
+  static getProductDiscountRate(type) {
+    switch (type) {
+      case "Premium":
+        return 0.1;
+      case "Gold":
+        return 0.1;
+      case "Silver":
+        return 0.1;
+      default:
+        return 0;
+    }
+  }
 }
 
 const main = () => {
-  const customer1 = new Customer("Phubate", true, DiscountRate.PPREMIUM);
-  const customer2 = new Customer("vick", true, DiscountRate.SPREMIUM);
-  const visit1 = new Visit(customer1, "2024/02/13", 700, 100);
+  const customer1 = new Customer("Punsan");
+  customer1.setMember(true);
+  customer1.setMemberType("Gold");
+
+  const visit1 = new Visit(customer1, "2024/02/13");
+  visit1.setProductExpense(150);
+  visit1.setServiceExpense(100);
 
   console.log(visit1.toString());
 };
